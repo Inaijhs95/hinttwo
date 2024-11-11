@@ -134,6 +134,17 @@
         }
     }
 
+    // 在庫を減少させる関数
+    function decreaseStock() {
+        const index = Math.floor(Math.random() * products.length);
+        if (products[index].stock > 0) {
+            products[index].stock--;
+            localStorage.setItem(`stock-${index}`, products[index].stock);
+            displayProducts();
+            checkRestock();
+        }
+    }
+
     // 在庫復活チェック
     function checkRestock() {
         const allZero = products.every(product => product.stock === 0);
@@ -145,7 +156,7 @@
     // 在庫復活の関数
     function restockProducts() {
         products.forEach((product, index) => {
-            product.stock += 5; // 5個ずつ在庫を復活
+            product.stock += 5;
             localStorage.setItem(`stock-${index}`, product.stock);
         });
         displayProducts();
@@ -167,8 +178,8 @@
     // リアルタイムで購入速報を更新
     setInterval(showNotification, 2800);
 
-    // 在庫がゼロの時にチェック
-    setInterval(checkRestock, 1000);
+    // 5秒ごとに在庫を減少
+    setInterval(decreaseStock, 5000);
 
     // 初期表示
     displayProducts();
