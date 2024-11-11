@@ -61,15 +61,28 @@
         color: #d32f2f;
         font-weight: bold;
     }
+    .stock-message {
+        position: fixed;
+        top: 10px;
+        right: -100%;
+        font-size: 1.2em;
+        font-weight: bold;
+        color: #d32f2f;
+        animation: slide 10s linear infinite;
+    }
+    @keyframes slide {
+        0% { right: -100%; }
+        100% { right: 100%; }
+    }
 </style>
 </head>
 <body>
 
 <h1>🔥激安100円セール！<br>今すぐ購入🔥</h1>
 
-<div class="notification-box" id="notification">購入者情報を取得中...</div>
-
+<div class="notification-box" id="notification"></div>
 <div id="products"></div>
+<div id="stock-message" class="stock-message"></div>
 
 <script>
     const products = [
@@ -83,6 +96,7 @@
     const initials = "AEHIKMNORSTUWY";
     const notificationElement = document.getElementById('notification');
     const productContainer = document.getElementById('products');
+    const stockMessageElement = document.getElementById('stock-message');
 
     // ローカルストレージから在庫を読み込み
     products.forEach((product, index) => {
@@ -120,21 +134,32 @@
         }
     }
 
+    // 在庫復活の関数
+    function restockProducts() {
+        products.forEach((product, index) => {
+            product.stock += 5; // 5個ずつ在庫を復活
+            localStorage.setItem(`stock-${index}`, product.stock);
+        });
+        displayProducts();
+        stockMessageElement.textContent = "在庫が復活しました！";
+    }
+
     // 購入速報を表示する関数
     function showNotification() {
         const initial1 = initials[Math.floor(Math.random() * initials.length)];
         const initial2 = initials[Math.floor(Math.random() * initials.length)];
         const product = products[Math.floor(Math.random() * products.length)];
+        const currentTime = new Date().toLocaleTimeString();
         if (product.stock > 0) {
-            const message = `${initial1}.${initial2}さんが${product.name}を購入しました！`;
-            notificationElement.textContent = message;
-        } else {
-            notificationElement.textContent = "現在、購入者の情報はありません。";
+            notificationElement.textContent = `${currentTime} - ${initial1}.${initial2}さんが${product.name}を購入しました！`;
         }
     }
 
     // リアルタイムで購入速報を更新
     setInterval(showNotification, 2800);
+
+    // 2分ごとに在庫を復活
+    setInterval(restockProducts, 120000);
 
     // 初期表示
     displayProducts();
