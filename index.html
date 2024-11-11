@@ -67,7 +67,7 @@
 
 <h1>🔥激安100円セール！<br>今すぐ購入🔥</h1>
 
-<div class="notification-box" id="notification"></div>
+<div class="notification-box" id="notification">購入者情報を取得中...</div>
 
 <div id="products"></div>
 
@@ -120,41 +120,21 @@
         }
     }
 
-    // 在庫をランダムに減らす関数
-    function decreaseStock() {
-        const index = Math.floor(Math.random() * products.length);
-        if (products[index].stock > 0) {
-            products[index].stock--;
-            localStorage.setItem(`stock-${index}`, products[index].stock);
-            displayProducts();
-            showPurchasedMessage(index);
-        }
-    }
-
-    // 購入されましたメッセージを表示
-    function showPurchasedMessage(index) {
-        const purchasedElement = document.getElementById(`purchased-${index}`);
-        purchasedElement.textContent = "購入されました！";
-        setTimeout(() => {
-            purchasedElement.textContent = "";
-        }, 3000);
-    }
-
     // 購入速報を表示する関数
     function showNotification() {
         const initial1 = initials[Math.floor(Math.random() * initials.length)];
         const initial2 = initials[Math.floor(Math.random() * initials.length)];
         const product = products[Math.floor(Math.random() * products.length)];
         if (product.stock > 0) {
-            notificationElement.textContent = `${initial1}.${initial2}さんが${product.name}を購入しました！`;
+            const message = `${initial1}.${initial2}さんが${product.name}を購入しました！`;
+            notificationElement.textContent = message;
+        } else {
+            notificationElement.textContent = "現在、購入者の情報はありません。";
         }
     }
 
     // リアルタイムで購入速報を更新
     setInterval(showNotification, 2800);
-
-    // ランダムに在庫を減少
-    setInterval(decreaseStock, 5000);
 
     // 初期表示
     displayProducts();
