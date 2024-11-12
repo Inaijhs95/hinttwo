@@ -128,44 +128,16 @@
     // 購入ボタンの機能
     function buyProduct(index) {
         if (products[index].stock > 0) {
+            // アクセス確認のためにフラグを設定
+            localStorage.setItem("access_BB", "true");
             window.location.href = "https://inaijhs95.my.canva.site/secret2025";
         } else {
             alert("在庫がありません。");
         }
     }
 
-    // 在庫を減少させる関数
-    function decreaseStock() {
-        const index = Math.floor(Math.random() * products.length);
-        if (products[index].stock > 0) {
-            products[index].stock--;
-            localStorage.setItem(`stock-${index}`, products[index].stock);
-            displayProducts();
-            checkRestock();
-        }
-    }
-
-    // 在庫復活チェック
-    function checkRestock() {
-        const allZero = products.every(product => product.stock === 0);
-        if (allZero) {
-            restockProducts();
-        }
-    }
-
-    // 在庫復活の関数
-    function restockProducts() {
-        products.forEach((product, index) => {
-            product.stock += 5;
-            localStorage.setItem(`stock-${index}`, product.stock);
-        });
-        displayProducts();
-        stockMessageElement.textContent = "在庫が復活しました！";
-        stockMessageElement.style.animation = "slide 10s linear";
-    }
-
-    // 購入速報を表示する関数
-    function showNotification() {
+    // リアルタイムで購入速報を更新
+    setInterval(() => {
         const initial1 = initials[Math.floor(Math.random() * initials.length)];
         const initial2 = initials[Math.floor(Math.random() * initials.length)];
         const product = products[Math.floor(Math.random() * products.length)];
@@ -173,13 +145,7 @@
         if (product.stock > 0) {
             notificationElement.textContent = `${currentTime} - ${initial1}.${initial2}さんが${product.name}を購入しました！`;
         }
-    }
-
-    // リアルタイムで購入速報を更新
-    setInterval(showNotification, 2800);
-
-    // 5秒ごとに在庫を減少
-    setInterval(decreaseStock, 5000);
+    }, 2800);
 
     // 初期表示
     displayProducts();
